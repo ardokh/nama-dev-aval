@@ -8,7 +8,30 @@ from werkzeug.utils import secure_filename
 # Server Port
 srv_port = 9000
 
-# Basic flask app to receive the file
+# Dictionary for imported data
+dataDict = dict()
+
+# Parse file to a list
+def parse_to_array(rec_file):
+    global dataDict
+    line_count = 1
+    
+    # Iterate and relay lines
+    for line in rec_file.split('\n'):
+        # Split lines from 'TAB'
+        dataList = list()
+        for dt in line.split('\t'):
+            dataList.append(dt)
+        
+        dataDict[line_count] = dataList
+        line_count += 1
+
+
+    #dataList = rec_file.split('\t')
+    print(dataDict)
+
+
+# Simple flask app to receive the file
 app = Flask(__name__)
 
 app.config["UPLOAD_FOLDER"] = "receveid/"
@@ -28,6 +51,7 @@ def save_file():
 
         file = open(app.config['UPLOAD_FOLDER'] + filename,"r")
         content = file.read()
+        parse_to_array(content)
         
         
     return render_template('content.html', content=content) 
